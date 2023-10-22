@@ -34,9 +34,9 @@ class MyApp extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
           // ···
-          titleLarge: GoogleFonts.firaCode(
+          titleLarge: GoogleFonts.belanosima(
             fontSize: 30,
-            fontStyle: FontStyle.italic,
+
           ),
           bodyMedium: GoogleFonts.firaCode(),
           displaySmall: GoogleFonts.firaSans(),
@@ -74,8 +74,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
           children: <Widget>[
             Container(
-              width: 150,
-              margin: const EdgeInsets.fromLTRB(60, 80, 60, 30),
+              width: 180,
+              margin: const EdgeInsets.fromLTRB(0, 80, 0, 30),
               child: ElevatedButton(
                   style: ButtonStyle(
                     padding:MaterialStateProperty.all<EdgeInsets>(
