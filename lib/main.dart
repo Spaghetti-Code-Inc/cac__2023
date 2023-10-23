@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:image/image.dart' as img;
 import 'camera.dart';
+import 'dart:io';
 
 void main() {
   runApp(const MyApp());
@@ -122,25 +123,43 @@ class TestModel extends StatefulWidget {
   State<TestModel> createState() => _TestModelState();
 }
 
+/// Wrapper for every detected class
+final class ObjectDetected {
+  final String name;
+  final double score;
+  final List bbox;
+
+  // String name, Int Score, [left x, upper y, right x, lower y]
+  const ObjectDetected(this.name, this.score, this.bbox);
+}
+
 class _TestModelState extends State<TestModel> {
   late Interpreter interpreter;
   late img.Image resized;
   late List<int> imageWithHeader;
+  late List<List<double>> result;
+  late List<ObjectDetected> objects;
+  late List<String> labels;
 
   loadModel() async {
     final options = InterpreterOptions();
-    interpreter = await Interpreter.fromAsset('assets/mobilenet_v1_1.0_224.tflite', options: options);
+    interpreter = await Interpreter.fromAsset('assets/models/ssd_mobilenet_v1_1_metadata_1.tflite', options: options);
+    interpreter.allocateTensors();
+  }
 
-    print(interpreter.getInputTensors().first);
-    print(interpreter.getOutputTensors().first);
+  Future<void> loadClasses() async {
+    // Waits to get the text file then sets classes equal to the correct version
+    await rootBundle.loadString('assets/models/labelmap.txt').then(
+      (holder) => labels = holder.split('\n')
+    );
   }
 
   Future<void> loadImage() async {
     // TODO works for jpg only
-    ByteData data = await rootBundle.load('assets/images/img.jpg');
+    ByteData data = await rootBundle.load('assets/images/cat_again.jpg');
 
     resized = img.decodeImage(data.buffer.asUint8List())!;
-    resized = img.copyResize(resized, width: 224, height: 224);
+    resized = img.copyResize(resized, width: 300, height: 300);
 
     imageWithHeader = img.encodeNamedImage("Test_Image.bmp", resized)!;
   }
@@ -151,26 +170,58 @@ class _TestModelState extends State<TestModel> {
 
 
   runInference(
-      List<List<List<num>>> imageMatrix,
+      List<List<List<int>>> imageMatrix,
       ) async {
-    // Tensor input [1, 224, 224, 3]
+    // Tensor input [1, 300, 300, 3]
     final input = [imageMatrix];
-    // Tensor output [1, 1001]
-    final output = [List<int>.filled(1001, 0)];
+    // Place holder
+    final output = [];
 
     // Run inference
     interpreter.run(input, output);
 
-    // Get first output tensor
-    final result = output.first;
-    print(result);
+    final bboxes = [List.filled(10, List.filled(4, 0.0))];
+    interpreter.getOutputTensor(0).copyTo(bboxes);
+
+    final classes = [List.filled(10, 0.0)];
+    interpreter.getOutputTensor(1).copyTo(classes);
+
+    final scores = [List.filled(10, 0.0)];
+    interpreter.getOutputTensor(2).copyTo(scores);
+
+    final detections = [0.0];
+    interpreter.getOutputTensor(3).copyTo(detections);
+
+    print(bboxes);
+    print(classes);
+    print(scores);
+
+    /// 0.5 can be used for the confidence threshold
+    for(int i = 0; i < 3 && scores[0][i] > 0.5; i++){
+
+      print(labels[classes[0][i].round()]);
+    }
+
+
+
   }
 
   updateImg(){
     setState(() {
       widget.showImg = !widget.showImg;
       if(widget.showImg == false) {
-        // Next step is too get pixel array and use the 'runInference' function
+        List<List<List<int>>> check = [];
+
+        // Create the rgb array
+        for(int i = 0; i < 300; i++){
+          check.add([]);
+          for(int j = 0; j < 300; j++){
+            List<int> rgb = [resized.getPixel(i, j)[0].toInt(), resized.getPixel(i, j)[1].toInt(), resized.getPixel(i, j)[2].toInt()];
+            check[i].add(rgb);
+          }
+        }
+       runInference(check);
+
       }
     });
   }
@@ -179,9 +230,10 @@ class _TestModelState extends State<TestModel> {
   Widget build(BuildContext context) {
     loadImage();
     loadModel();
+    loadClasses();
 
     return Column( children: [
-      (widget.showImg) ? Image.asset('assets/images/img.jpg') : Container(child: Image(image: MemoryImage(Uint8List.fromList(imageWithHeader)))),
+      (widget.showImg) ? Image.asset('assets/images/cat_again.jpg') : Container(child: Image(image: MemoryImage(Uint8List.fromList(imageWithHeader)))),
 
       ElevatedButton(
           style: ButtonStyle(
