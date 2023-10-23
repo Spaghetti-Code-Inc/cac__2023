@@ -1,3 +1,4 @@
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:tflite_flutter/tflite_flutter.dart' as tfl;
@@ -54,7 +55,7 @@ class _CameraState extends State<Camera> {
           }
         }
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.large(
         onPressed: () async {
           // Take the Picture in a try / catch block. If anything goes wrong,
           // catch the error.
@@ -72,7 +73,7 @@ class _CameraState extends State<Camera> {
 
             //
             // // If the picture was taken, display it on a new screen.
-            // await Navigator.of(context).push(
+            //  await Navigator.of(context).push(
             //   MaterialPageRoute(
             //     builder: (context) => DisplayPicture(
             //       // Pass the automatically generated path to
@@ -90,7 +91,9 @@ class _CameraState extends State<Camera> {
           }
         },
         child: const Icon(Icons.camera_alt),
-      ),
+
+      ),floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+
     );
   }
 }
