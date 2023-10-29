@@ -1,4 +1,4 @@
-
+import 'main.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:tflite_flutter/tflite_flutter.dart' as tfl;
@@ -65,8 +65,9 @@ class _CameraState extends State<Camera> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            FloatingActionButton(onPressed: () {},
-            child: const Icon(Icons.flip_camera_android_sharp),
+            FloatingActionButton(onPressed: () {
+    Navigator.pop(context);},
+            child: const Icon(Icons.arrow_back),
             ),
             Padding(
               padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
