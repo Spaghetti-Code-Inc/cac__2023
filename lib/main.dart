@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tflite_flutter/tflite_flutter.dart' as tf;
 import 'package:image/image.dart' as img;
+import 'about.dart';
 import 'camera.dart';
 
 void main() {
@@ -90,7 +91,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   children: <Widget>[
                     TextButton(child: const Text('Config'), onPressed: () {}),
                     TextButton(child: const Text('Models'), onPressed: () {}),
-                    TextButton(child: const Text('About'), onPressed: () {}),
+                    TextButton(child: const Text('About'), onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => About()));
+                    }),
                   ],
                 )),
           ],

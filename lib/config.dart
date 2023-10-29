@@ -4,7 +4,7 @@ import 'main.dart';
 
 class Config extends StatefulWidget{
   @override
-  State<StatefulWidget> createState() => _AboutState();
+  State<StatefulWidget> createState() => _ConfigState();
 
 }
 
