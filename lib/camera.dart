@@ -90,7 +90,7 @@ class _CameraState extends State<Camera> {
                     // If the picture was taken, display it on a new screen.
                     await Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => DisplayPicture(
+                        builder: (context) => RunModel(
                           // Pass the automatically generated path to
                           // the DisplayPictureScreen widget.
                           imagePath: image.path,
