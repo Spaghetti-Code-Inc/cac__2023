@@ -1,13 +1,16 @@
-import 'dart:typed_data';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tflite_flutter/tflite_flutter.dart' as tf;
-import 'package:image/image.dart' as img;
 import 'about.dart';
 import 'camera.dart';
+import 'config.dart';
+
+
+class Globals {
+  static double confidence = 0.5;
+  static int maxDetections = 5;
+}
 
 void main() {
   runApp(const MyApp());
@@ -89,7 +92,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: OverflowBar(
                   alignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    TextButton(child: const Text('Config'), onPressed: () {}),
+                    TextButton(child: const Text('Config'), onPressed: () {Navigator.push(
+                        context, MaterialPageRoute(builder: (_) => Config()));}),
                     TextButton(child: const Text('About'), onPressed: () {
                       Navigator.push(context, MaterialPageRoute(builder: (_) => About()));
                     }),

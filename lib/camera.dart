@@ -11,7 +11,6 @@ var flashIcon = Icons.flash_off;
 
 //CAMERA CLASS
 class Camera extends StatefulWidget{
-  final interpreter = tfl.Interpreter.fromAsset('assets/lite-model_object_detection_mobile_object_localizer_v1_1_metadata_2.tflite');
   final CameraDescription camera;
 
 
@@ -82,7 +81,7 @@ class _CameraState extends State<Camera> {
                     // Attempt to take a picture and then get the location
                     // where the image file is saved.
                     final image = await _controller.takePicture();
-
+                    await _controller.setFlashMode(FlashMode.off);
                     // if (!mounted) return;
 
                     print(image.path);
@@ -98,6 +97,8 @@ class _CameraState extends State<Camera> {
                         ),
                       ),
                     );
+
+
                   } catch (e) {
                     // If an error occurs, log the error to the console.
                     setState(() {

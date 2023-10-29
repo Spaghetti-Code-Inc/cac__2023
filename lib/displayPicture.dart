@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tflite_flutter/tflite_flutter.dart' as tf;
@@ -93,7 +91,9 @@ class _RunModelState extends State<RunModel> {
     imageWithHeader = img.encodeNamedImage("Test_Image.bmp", resized)!;
   }
 
+  @override
   dispose() {
+    super.dispose();
     interpreter.close();
   }
 
@@ -104,7 +104,7 @@ class _RunModelState extends State<RunModel> {
     final input = [imageMatrix];
 // Place holder
     final output = [];
-
+    print(output.shape);
 // Run inference
     interpreter.run(input, output);
 
@@ -132,8 +132,7 @@ class _RunModelState extends State<RunModel> {
 
   updateImg() {
     setState(() {
-      widget.showImg = !widget.showImg;
-      if (widget.showImg == false) {
+      if (widget.showImg == true) {
         List<List<List<int>>> check = [];
 
         // Create the rgb array
@@ -149,16 +148,18 @@ class _RunModelState extends State<RunModel> {
             check[i].add(rgb);
           }
         }
+        print('going into running inference');
         runInference(check);
       }
+      widget.showImg = !widget.showImg;
     });
   }
 
   List<Widget> renderBoxes() {
     // Confidence threshold
     const double CONF = 0.5;
-    double factorX = 300;
-    double factorY = 300;
+    double factorX = MediaQuery.of(context).size.width;
+    double factorY = 720*MediaQuery.of(context).size.width/480;
 
     Color blue = Colors.blue;
 
@@ -189,8 +190,8 @@ class _RunModelState extends State<RunModel> {
       );
     }).toList();
 
-    o.insert(0, Container(child: Image(image: MemoryImage(Uint8List.fromList(imageWithHeader)))));
-// o.insert(0, Container(child: Image.file(File(widget.imagePath))));
+    // o.insert(0, Container(child: Image(image: MemoryImage(Uint8List.fromList(imageWithHeader)))));
+    o.insert(0, Container(child: Image.file(File(widget.imagePath))));
 
     return o;
   }
@@ -203,16 +204,32 @@ class _RunModelState extends State<RunModel> {
 
     return Column(
       children: [
-        (widget.showImg) ? Image.file(File(widget.imagePath)) : Stack(children: renderBoxes()),
         Container(
-          padding: const EdgeInsets.only(top: 10),
-          child: FloatingActionButton(
-            onPressed: () {
-              updateImg();
-            },
-            child: const Icon(Icons.auto_mode_rounded),
-          ),
+          child: (widget.showImg) ? Image.file(File(widget.imagePath)) : Stack(children: renderBoxes()),
         ),
+        Container(
+          padding: EdgeInsets.only(top: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              FloatingActionButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Icon(Icons.arrow_back),
+              ),
+              Container(
+                padding: const EdgeInsets.only(left: 10),
+                child: FloatingActionButton(
+                  onPressed: () {
+                    updateImg();
+                  },
+                  child: const Icon(Icons.auto_mode_rounded),
+                ),
+              ),
+            ],
+          ),
+        )
       ],
     );
   }

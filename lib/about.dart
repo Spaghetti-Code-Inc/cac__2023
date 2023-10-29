@@ -16,7 +16,8 @@ class _AboutState extends State<About> {
         title: const Text("About"),
       ),
       body: Container(
-        child: const Text("\nObjecTracer is an app created by Spaghetti Code Inc designed for integrating object detection technology into a mobile app. \n\nFor business inquiries, contact Spaghetti Code Inc at cac.pogg@gmail.com"),
+        padding: EdgeInsets.all(15),
+        child: const Text("ObjecTracer is an app created by Spaghetti Code Inc designed for integrating object detection technology into a mobile app. \n\nFor business inquiries, contact Spaghetti Code Inc at cac.pogg@gmail.com"),
       ),
     );
   }
