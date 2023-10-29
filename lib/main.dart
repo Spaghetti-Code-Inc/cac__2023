@@ -90,7 +90,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   alignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     TextButton(child: const Text('Config'), onPressed: () {}),
-                    TextButton(child: const Text('Models'), onPressed: () {}),
                     TextButton(child: const Text('About'), onPressed: () {
                       Navigator.push(context, MaterialPageRoute(builder: (_) => About()));
                     }),
